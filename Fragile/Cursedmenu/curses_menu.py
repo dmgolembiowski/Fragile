@@ -299,11 +299,13 @@ class CursesMenu(object):
 
         if ord('1') <= user_input <= go_to_max:
             self.go_to(user_input - ord('0') - 1)
-        elif user_input == curses.KEY_DOWN:
+            self.select()
+        elif any([bool(user_input == curses.KEY_DOWN),
+                bool(user_input == ord('\t'))]):
             self.go_down()
         elif user_input == curses.KEY_UP:
             self.go_up()
-        elif user_input == ord("\n"):
+        elif user_input == ord('\n'):
             self.select()
 
         return user_input

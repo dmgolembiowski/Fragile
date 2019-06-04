@@ -52,7 +52,7 @@ class Application:
                     ["item1", "item2", "item3"]
                 )
             __openProject__ = SubmenuItem(
-                    "Open an existing project", 
+                    "Open or Modify a Project", 
                     openProject, 
                     menu) 
 
@@ -65,8 +65,8 @@ class Application:
                     createNew,
                     menu)
 
-            ''' 3 - Search your projects '''
-            __search__ = MenuItem("Search for comments")
+            ''' 3 - Search for a project or file '''
+            __search__ = MenuItem("Search for a project or file")
 
             for item in [__openProject__, __createNew__, __search__]:
                 menu.append_item(item)
