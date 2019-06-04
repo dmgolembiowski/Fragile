@@ -1,0 +1,7 @@
+#!/usr/bin/python3m
+import sys
+import subprocess
+
+PATH_TO_FRAGILE = '/home/david/.local/bin/Fragile'
+
+sys.exit(subprocess.call(['python3m', PATH_TO_FRAGILE]))

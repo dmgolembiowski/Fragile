@@ -18,8 +18,8 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "extensions"))
 import socket
-from cursesmenu import CursesMenu, SelectionMenu
-from cursesmenu.items import SubmenuItem, CommandItem, MenuItem
+from .Cursedmenu import CursesMenu, SelectionMenu
+from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem
 
 #-----------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ class Application:
                     ["item1", "item2", "item3"]
                 )
             __openProject__ = SubmenuItem(
-                    "Open a project", 
+                    "Open an existing project", 
                     openProject, 
                     menu) 
 
