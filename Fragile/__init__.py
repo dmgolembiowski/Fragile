@@ -19,7 +19,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "extensions"))
 import socket
 from .Cursedmenu import CursesMenu, SelectionMenu
-from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem
+from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
 
 #-----------------------------------------------------------------------------
 
