@@ -98,61 +98,176 @@ class Self:
     """ Container for values of FormMultiPageActionWithMenus """
     pass
 
+
 class CreateProject(npyscreen.NPSApp):
-    """ See help(CreateProject.main)
-    
-    """
+    """ See help(CreateProject.main)"""
+    name = "Fragile--Create a new project:"
     def __init__(self):
         self = Self
 
-    def main(self, target='project_page'):
+    def main(self):
         """ CreateProject.main() overloads npyscreen.NPSApp.main()
         The real action comes from the class
         `npyscreen.FormMultiPageActionWithMenus`, which comes from
         /path/to/npyscreen/fmFormMultiPage.py
 
         cp = nps.FormMultiPageActionWithMenus(name="Fragile: Create a new project:")
-        _projectName = cp.add(nps.TitleText, name='Project Name:')
-        _description  = cp.add(nps.TitleText, name='Description:')
-        _startDate = cp.add(nps.TitleDateCombo, name='Select today\'s Date:')
-        _finishDate = cp.add(nps.TitleDateCombo, name='Deadline:')
-        #_numFeatures = cp.add(nps.TitleText, name='No. of Features:', value=1)
-        _numFeatures = Self
-        _numFeatures.value = 1
-        """
-        nonlocal _features = {}
-        def project_page():
-             cp = nps.FormMultiPageActionWithMenus(name="Fragile--Create a new project:")
-            _projectName = cp.add(nps.TitleText, name='Project Name:')
-            _description  = cp.add(nps.TitleText, name='Description:')
-            _startDate = cp.add(nps.TitleDateCombo, name='Start Date:')
-            _finishDate = cp.add(nps.TitleDateCombo, name='Finish Date:')
-            _numFeatures = cp.add(nps.TitleSlider, out_of=20, name='Est. No. of High-Level Features:')
-                
-
-        def feature_pages(num_features):
-            pass
+       """
+        cp = nps.FormMultiPageActionWithMenus(name=CreateProject.name)
+        projectName = cp.add(nps.TitleText, name='Project Name:')
+        description  = cp.add(nps.TitleText, name='Description:')
+        startDate = cp.add(nps.TitleDateCombo, name='Start Date:')
+        finishDate = cp.add(nps.TitleDateCombo, name='Finish Date:')
+        #_num = cp.add(
+        #         nps.TitleSlider,
+        #         out_of=20,
+        #         name='Est. No. of High-Level Features:')
         
-        def task_pages(num_tasks):
-            pass
-
-        def step_pages(num_pages):
-            pass
-
-       
+        # Create One "Features" Page
+        cp.switch_page(0)
+        features = []
         feature_page = cp.add_page()
+        feature_title = cp.add(
+                nps.TitleText,
+                name="Feature Label:")
+        
+        #feature_complete = cp.add(
+        #        nps.TitleSelectOne,
+        #        max_height=4,
+        #        name="Feature Completed?",
+        #        values=["True", "False"],
+        #        value=[1,])
+        
+        feature_difficulty = cp.add(
+                nps.TitleSlider,
+                out_of=11,
+                name="Difficulty:",
+                value=0.0)
+        
+        feature_finishDate = cp.add(
+                nps.TitleDateCombo, name="Finish Date:")
  
+        feature_points = cp.add(
+                nps.TitleSlider,
+                name="Effort Points:",
+                out_of=64.0)
+        
+        
+        feature_priority = cp.add(
+                npyscreen.TitleSelectOne,
+                max_height=4,
+                value=[0,],
+                name="Indicate the Priority:",
+                values=["High","Medium","Low"],
+                scroll_exit=True)
+        cp.switch_page(1)
+        tasks = []
+
+        # Create One "Tasks" Page
+        tasks_page = cp.add_page()
+        task_title = cp.add(
+                nps.TitleText,
+                name="Task Label: ")
+
+        #tasks_complete = cp.add(
+        #        nps.TitleSelectOne,
+        #        max_height=4,
+        #        name="Task Completed?",
+        #        values=["True", "False"],
+        #        value=[1,])
+
+        tasks_finishDate = cp.add(
+                nps.TitleDateCombo, name="Finish Date:")
+
+        tasks_points = cp.add(
+                nps.TitleSlider,
+                out_of=11,
+                name="Points",
+                value=0.0)
+
+        tasks_priority = cp.add(
+                npyscreen.TitleSelectOne,
+                max_height=5,
+                value=[0,],
+                name="Indicate the Priority:",
+                values=["High","Medium","Low"])
+
+        tasks_notes = cp.add(
+                npyscreen.BoxTitle,
+                max_height=9,
+                name="Notes: (Highlight and press Enter to edit)",
+                scroll_exit=True)
+        cp.switch_page(2)
+        
+        steps = []
+
+        # Create One "Steps" Page
+        steps_page = cp.add_page()
+        steps_title = cp.add(
+                nps.TitleText,
+                name="Step: ")
+        
+        steps_complete = cp.add(
+                nps.TitleSelectOne,
+                max_height=4,
+                name="Step Completed:",
+                values=["True", "False"],
+                value=[1,])
+
+        steps_finishDate = cp.add(
+                nps.TitleDateCombo, name="Finish Date:")
+
+        steps_points = cp.add(
+                nps.TitleSlider,
+                out_of=32,
+                name="Points:",
+                value=0.0)
+        
+        steps_priority = cp.add(
+                npyscreen.TitleSelectOne,
+                max_height=5,
+                value=[0,],
+                name="Indicate the Priority:",
+                values=["High","Medium","Low"])
+        
+        steps_notes = cp.add(
+                npyscreen.BoxTitle,
+                max_height=9,
+                name="Notes: (Highlight and press Enter to edit)")
+         
+        cp.switch_page(3)
+
+        on_ok = lambda: npyscreen.notify_confirm("Project saved!")
+        cp.on_ok = on_ok
+        cp.edit()
+
     def features(self):
-        self.feature_title = self.erase
-        self.difficulty =
-        self.complete = 
-        self.points = 
-        self.finishDate =
-        self.priority = 
-        self.tasks =
+        self.feature_title: str
+        self.complete: bool
+        self.difficulty: float
+        self.points = 0
+        self.finishDate: str
+        self.priority: str
+        self.tasks = []
         
     def tasks(self):
+        self.task_title: str
+        self.complete: bool
+        self.difficulty: float
+        self.points = 0
+        self.finishDate: str
+        self.priority: str
+        self.steps = []
 
+    def steps(self):
+        self.step_title: str
+        self.complete: bool
+        self.difficulty: float
+        self.points = 0
+        self.finishDate: str
+        self.priority: str
+        self.notes = ''
+    
     def first_save(self, _features):
         file_path = 'records.json'
         from pathlib import Path
@@ -189,11 +304,18 @@ class CreateProject(npyscreen.NPSApp):
             dumping = [cache[key] for key in list(cache)]
             records = json.dumps(dumping, indent=4)
             f.write(records)
+'''
+@npyscreen.wrapper_basic
+def createProject():
+    proj = CreateProject()
+    proj.run()
+'''
+def main_project(*args):
+    proj = CreateProject()
+    proj.run()
 
-def createProject(*args):
-    proj = NewProject(name="Creating a new project: ")
-    proj.edit()
-    #proj.save()
+def main():
+    print(npyscreen.wrapper_basic(main_project))
 
 if __name__ == '__main__':
-    print(npyscreen.wrapper_basic(createProject))
+    print(npyscreen.wrapper_basic(main_project))

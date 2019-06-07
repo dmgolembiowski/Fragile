@@ -20,6 +20,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "extensions"))
 import socket
 from .Cursedmenu import CursesMenu, SelectionMenu
 from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
+from . import core
 
 #-----------------------------------------------------------------------------
 
@@ -57,13 +58,9 @@ class Application:
                     menu) 
 
             ''' 2 - Create a new project '''
-            createNew = SelectionMenu(
-                    ["Need form here"]
-                )
-            __createNew__ = SubmenuItem(
+            __createNew__ = FunctionItem(
                     "Create a new project",
-                    createNew,
-                    menu)
+                    core.main)
 
             ''' 3 - Search for a project or file '''
             __search__ = MenuItem("Search for a project or file")
