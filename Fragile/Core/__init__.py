@@ -18,14 +18,12 @@ import npyscreen
 nps = npyscreen
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "extensions"))
-from .Cursedmenu import CursesMenu, SelectionMenu
-from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
+from ..Cursedmenu import CursesMenu, SelectionMenu
+from ..Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
 import curses
 import json
 import IPython
-import random
-from .Application import Application
+from ..Application import Application
 #-----------------------------------------------------------------------------
 class Record:
     records = {}
@@ -368,18 +366,25 @@ class CreateProject(npyscreen.NPSApp):
             dumping = [cache[key] for key in list(cache)]
             records = json.dumps(dumping, indent=4)
             f.write(records)
+
 '''
 @npyscreen.wrapper_basic
 def createProject(*args):
     proj = CreateProject()
     proj.run()
 '''
-def main_project(*args):
-    proj = CreateProject()
-    proj.run()
 
-def main():
-    print(npyscreen.wrapper_basic(main_project))
+class Main:
+    @staticmethod
+    def create_project(*args):
+        proj = CreateProject()
+        proj.run()
+
+    @staticmethod
+    def main():
+        print(npyscreen.wrapper_basic(Main.create_project))
+        Application.start_fragile(CreateProject, Main)
 
 if __name__ == '__main__':
-    print(npyscreen.wrapper_basic(main_project))
+    print(npyscreen.wrapper_basic(Main.create_project))
+    Application.start_fragile()

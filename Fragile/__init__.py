@@ -20,10 +20,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "extensions"))
 import socket
 from .Cursedmenu import CursesMenu, SelectionMenu
 from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
-from . import core
-
+#from .Application import Application
+import curses
+from .Core import CreateProject, Main
 #-----------------------------------------------------------------------------
-
 
 class User:
     try:
@@ -42,7 +42,7 @@ class Application:
     def start_fragile():
         description = 'A local goal-planning kanban board inspired by Agile methodologies.'
         menu = CursesMenu('Fragile Project Manager', description)
-
+        
         def launch():
             nonlocal description
             nonlocal menu
@@ -60,7 +60,7 @@ class Application:
             ''' 2 - Create a new project '''
             __createNew__ = FunctionItem(
                     "Create a new project",
-                    core.main)
+                    Main.main)
 
             ''' 3 - Search for a project or file '''
             __search__ = MenuItem("Search for a project or file")
