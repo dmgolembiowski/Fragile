@@ -1,3 +1,2 @@
 curses-menu==0.5.0
 npyscreen==4.10.5
-pkg-resources==0.0.0

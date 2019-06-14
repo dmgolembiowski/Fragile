@@ -1,4 +1,4 @@
-from cursesmenu.items import MenuItem
+from ..items import MenuItem
 
 
 class SelectionItem(MenuItem):
