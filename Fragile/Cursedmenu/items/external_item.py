@@ -1,7 +1,7 @@
 import curses
 
-from cursesmenu import clear_terminal
-from cursesmenu.items import MenuItem
+from ..curses_menu import clear_terminal
+from ..items import MenuItem
 
 
 class ExternalItem(MenuItem):
