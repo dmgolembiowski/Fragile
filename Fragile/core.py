@@ -18,14 +18,12 @@ import npyscreen
 nps = npyscreen
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "extensions"))
-from .Cursedmenu import CursesMenu, SelectionMenu
+from .Cursedmenu import CursesMenu, SelectionMenu, curses_menu
 from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
 import curses
 import json
 import IPython
-import random
-from .Application import Application
+#from . import Application # ..Application #import Application
 #-----------------------------------------------------------------------------
 class Record:
     records = {}
@@ -103,9 +101,11 @@ class Self:
 class CreateProject(npyscreen.NPSApp):
     """ See help(CreateProject.main)"""
     name = "Fragile--Create a new project:"
+    handler = None
     npyscreen.disableColor()
 
     def __init__(self):
+        self.handler = CreateProject.handler
         self = Self
 
     @staticmethod
@@ -305,6 +305,8 @@ class CreateProject(npyscreen.NPSApp):
         with open("records.pydict", "w") as f:
             f.write(str(rec))
 
+        Main.resume(self.handler)
+
     def features(self):
         self.feature_title: str
         self.complete: bool
@@ -368,18 +370,28 @@ class CreateProject(npyscreen.NPSApp):
             dumping = [cache[key] for key in list(cache)]
             records = json.dumps(dumping, indent=4)
             f.write(records)
-'''
-@npyscreen.wrapper_basic
-def createProject(*args):
-    proj = CreateProject()
-    proj.run()
-'''
-def main_project(*args):
-    proj = CreateProject()
-    proj.run()
 
-def main():
-    print(npyscreen.wrapper_basic(main_project))
+class Main:
+    @staticmethod
+    def create_project(*args):
+        proj = CreateProject()
+        proj.run()
 
+    @staticmethod
+    def main(handler):
+        # handler.cp = CreateProject
+        CreateProject.handler = handler
+        handler.clear_screen()
+        handler.menu_pause()
+        print(npyscreen.wrapper_basic(Main.create_project))
+
+    @staticmethod
+    def resume(handler):
+        handler.menu_resume()
+        handler.clear_screen()
+        handler.menu.show()
+"""
 if __name__ == '__main__':
-    print(npyscreen.wrapper_basic(main_project))
+    print(npyscreen.wrapper_basic(Main.create_project))
+    Application.start_fragile()
+"""

@@ -11,4 +11,5 @@
 
 from Fragile import Application
 
-Application.start_fragile()
+app = Application()
+app.start_fragile()
