@@ -8,8 +8,8 @@
 #
 #  The full license is in the file COPYING.txt, distributed with this software.
 #-----------------------------------------------------------------------------
-
+import sys
 from Fragile import Application
 
 app = Application()
-app.start_fragile()
+sys.exit(app.start_fragile())

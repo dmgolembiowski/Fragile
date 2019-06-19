@@ -16,6 +16,7 @@ Fragile.core: Terminal application for managing and tracking projects in product
 from __future__ import annotations
 import npyscreen
 nps = npyscreen
+import threading
 import os
 import sys
 from .Cursedmenu import CursesMenu, SelectionMenu, curses_menu
@@ -23,6 +24,31 @@ from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
 import curses
 import json
 import IPython
+import subprocess
+import functools
+'''
+def print_debugger(function):
+    @functools.wraps(function)
+    def result(*args, **kwargs):
+        debugName = function.__name__ + "("
+        if args:
+            for i, arg in enumerate(args):
+                if i != 0:
+                    debugName += ", "
+                debugName += repr(arg)
+        if kwargs:
+            for i, (arg, val) in enumerate(kwargs.items()):
+                if i != 0 or len(args) > 0:
+                    debugName += ", "
+                debugName += str(arg) + "=" + str(val)
+        debugName += ")"
+        print(f"C {debugName}")
+        res = function(*args, **kwargs)
+        if res:
+            print(f"R {debugName} = {res}")
+        return res
+    return result
+'''
 #from . import Application # ..Application #import Application
 #-----------------------------------------------------------------------------
 class Record:
@@ -102,7 +128,7 @@ class CreateProject(npyscreen.NPSApp):
     """ See help(CreateProject.main)"""
     name = "Fragile--Create a new project:"
     handler = None
-    npyscreen.disableColor()
+    #npyscreen.disableColor()
 
     def __init__(self):
         self.handler = CreateProject.handler
@@ -304,7 +330,6 @@ class CreateProject(npyscreen.NPSApp):
 
         with open("records.pydict", "w") as f:
             f.write(str(rec))
-
         Main.resume(self.handler)
 
     def features(self):
@@ -371,25 +396,59 @@ class CreateProject(npyscreen.NPSApp):
             records = json.dumps(dumping, indent=4)
             f.write(records)
 
+def call_counter(function):
+    create_project_count = 0
+    main_count = 0
+    resume_count = 0
+
+    @functools.wraps(function)
+    def result(*args, **kwargs):
+        nonlocal create_project_count
+        nonlocal main_count
+        nonlocal resume_count
+        if function.__name__ == 'create_project':
+            create_project_count += 1
+            Main.create_project_count = create_project_count
+        elif function.__name__ == 'main':
+            main_count += 1
+            Main.main_count = main_count
+        elif function.__name__ == 'resume_count':
+            resume_count += 1
+            Main.resume_count = resume_count
+        return function(*args, **kwargs)
+    return result
+
 class Main:
+    create_project_count = 0
+    main_count = 0
+    resume_count = 0
+
     @staticmethod
+    @call_counter
     def create_project(*args):
         proj = CreateProject()
         proj.run()
 
     @staticmethod
+    @call_counter
     def main(handler):
-        # handler.cp = CreateProject
         CreateProject.handler = handler
         handler.clear_screen()
         handler.menu_pause()
         print(npyscreen.wrapper_basic(Main.create_project))
 
     @staticmethod
+    @call_counter
     def resume(handler):
-        handler.menu_resume()
-        handler.clear_screen()
-        handler.menu.show()
+        #handler.menu.draw()
+        #handler.menu_resume()
+        #sys.exit(handler.app.start_fragile(doUpdate=True))
+        nps.blank_terminal()
+        curses.echo()
+        curses.curs_set(1)
+        curses.nocbreak()
+        curses.endwin()
+        sys.exit(handler.clas._start_fragile())
 """
 if __name__ == '__main__':
     print(npyscreen.wrapper_basic(Main.create_project))
