@@ -1,7 +1,7 @@
-#!/usr/bin/python3m
+#!/usr/bin/env python3
 import sys
 import subprocess
+from pathlib import Path
 
-PATH_TO_FRAGILE = '/home/david/.local/bin/fragile'
-
-sys.exit(subprocess.call(['python3.7', PATH_TO_FRAGILE]))
+PATH_TO_FRAGILE = str(Path(__file__).parent.absolute()) + '/Fragile'
+sys.exit(subprocess.call(['python3', PATH_TO_FRAGILE]))
