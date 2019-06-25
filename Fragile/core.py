@@ -21,6 +21,7 @@ import os
 import sys
 from .Cursedmenu import CursesMenu, SelectionMenu, curses_menu
 from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
+#from .Extensions import FileExplorer
 import curses
 import json
 import IPython
@@ -160,7 +161,6 @@ class CreateProject(npyscreen.NPSAppManaged):
 
         cp = nps.FormMultiPageActionWithMenus(name="Fragile: Create a new project:")
         """
-        npyscreen.disableColor()
         cp = nps.FormMultiPageActionWithMenus(name=CreateProject.name)
         projectName = cp.add(nps.TitleText, name='Project Name:', value='')
         pn = []
@@ -168,7 +168,8 @@ class CreateProject(npyscreen.NPSAppManaged):
                 form=cp,
                 _value_list=pn,
                 _name='Description')
-
+        project_location = cp.add(nps.TitleFilenameCombo, name='Repository Location')
+        #cp.add_widget_intelligent(nps.FileSelector, message=nps.selectFile('~/'))
         # Maybe add the box for choosing project directory/Git Repo
         startDate = cp.add(nps.TitleDateCombo, name='Start Date:')
         finishDate = cp.add(nps.TitleDateCombo, name='Finish Date:')
