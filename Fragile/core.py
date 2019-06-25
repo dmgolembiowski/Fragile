@@ -26,6 +26,9 @@ import json
 import IPython
 import subprocess
 import functools
+import datetime
+from pathlib import Path
+
 '''
 def print_debugger(function):
     @functools.wraps(function)
@@ -286,12 +289,21 @@ class CreateProject(npyscreen.NPSApp):
         on_ok = lambda: npyscreen.notify_confirm("Project saved!")
         cp.on_ok = on_ok
         cp.edit()
-        
+        ''' For future me to use        
         Priority = {
                 0: "High",
                 1: "Medium",
                 2: "Low"}
-
+        '''
+        # Bring up everything saved from previous sessions
+        records_pydict = Path(__file__).parent.absolute()
+        records_pydict = str(records_pydict)
+        records_pydict += "/records.pydict"
+        with open(records_pydict, "r") as f:
+            saved = f.read()
+        saved = eval(saved)
+        
+        # Creating newest record instance
         rec = {}
         _all = {}
         names = set()
@@ -299,6 +311,7 @@ class CreateProject(npyscreen.NPSApp):
         rec['names'] = names
         rec['names'].add(projectName.value)
 
+        # Filling in ALL of the attributes
         rec['all'].update({projectName.value: {
             'projectName': projectName.value,
             'project_description': pn,
@@ -311,25 +324,31 @@ class CreateProject(npyscreen.NPSApp):
             'feature_difficulty': feature_difficulty.value,
             'feature_finishDate': feature_finishDate.value,
             'feature_points': feature_points.value,
-            'feature_priority': "".join([x for x in fn]),
-            'feature_notes': feature_notes.value,
+            'feature_priority': feature_priority.value,
+            'feature_notes': fn,
             'tasks': [{
                     'task_title': task_title.value,
                     'task_finishDate': task_finishDate.value,
                     'task_points': task_points.value,
-                    'task_priority': Priority[task_priority.value[0]],
-                    'task_notes': "".join([x for x in tn]),
+                    'task_priority': task_priority.value,
+                    'task_notes': tn,
                     'steps': [{
                         'step_title': step_title.value,
                         'step_complete': step_complete.value,
                         'step_finishDate': step_finishDate.value,
                         'step_points': step_points.value,
-                        'step_priority': Priority[step_priority.value[0]],
-                        'step_notes': "".join([x for x in sn])}]
+                        'step_priority': step_priority.value,
+                        'step_notes': step_notes.value}]
                     }]})
 
-        with open("records.pydict", "w") as f:
-            f.write(str(rec))
+        # Now, we merge the two records into one container
+        saved['names'] = saved['names'].union(rec['names'])
+        saved['all'].update(rec['all'])
+        
+        with open(records_pydict, "w") as f:
+            f.write(str(saved))
+
+        # Call core.Main.resume(handler=CreateProject.handler)
         Main.resume(self.handler)
 
     def features(self):
