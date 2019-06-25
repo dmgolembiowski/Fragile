@@ -127,7 +127,7 @@ class Self:
     """ Container for values of FormMultiPageActionWithMenus """
     pass
 
-class CreateProject(npyscreen.NPSApp):
+class CreateProject(npyscreen.NPSAppManaged):
     """ See help(CreateProject.main)"""
     name = "Fragile--Create a new project:"
     handler = None
