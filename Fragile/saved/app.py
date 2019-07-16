@@ -19,8 +19,8 @@ nps = npyscreen
 import threading
 import os
 import sys
-from .Cursedmenu import CursesMenu, SelectionMenu, curses_menu
-from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
+#from ..Cursedmenu import CursesMenu, SelectionMenu, curses_menu
+#from ..Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
 #from .Extensions import FileExplorer
 import curses
 import json
@@ -29,101 +29,6 @@ import subprocess
 import functools
 import datetime
 from pathlib import Path
-
-'''
-def print_debugger(function):
-    @functools.wraps(function)
-    def result(*args, **kwargs):
-        debugName = function.__name__ + "("
-        if args:
-            for i, arg in enumerate(args):
-                if i != 0:
-                    debugName += ", "
-                debugName += repr(arg)
-        if kwargs:
-            for i, (arg, val) in enumerate(kwargs.items()):
-                if i != 0 or len(args) > 0:
-                    debugName += ", "
-                debugName += str(arg) + "=" + str(val)
-        debugName += ")"
-        print(f"C {debugName}")
-        res = function(*args, **kwargs)
-        if res:
-            print(f"R {debugName} = {res}")
-        return res
-    return result
-'''
-#from . import Application # ..Application #import Application
-#-----------------------------------------------------------------------------
-class Record:
-    records = {}
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-    
-class Feature:
-    def __init__(self, **kwargs):
-        self.feature_title: str
-        self.difficulty: float
-        self.complete: bool
-        self.points: int 
-        self.finishDate: str
-        self.priority: str
-        self.tasks: list
-        self.__dict__.update(kwargs)
-        for t in range(len(self.tasks)):
-            self.tasks[t] = Task(**self.task[t])            
-
-    def write(self) -> dict:
-        return self.__dict__
-
-    @staticmethod
-    def get():
-        template = {}
-        return template
-
-class Task:
-    def __init__(self, **kwargs):
-        self.task_title: str
-        self.difficulty: float
-        self.complete: bool
-        self.points: int
-        self.finishDate: str
-        self.priority: str
-        self.steps: list
-        self.__dict__.update(kwargs)
-        for s in range(len(self.steps)):
-            self.steps[s] = Step(**self.steps[s])
-
-    def write(self) -> dict:
-        return self.__dict__
-
-    @staticmethod
-    def get():
-        template = {}
-        return template
-
-
-
-class Step:
-    def __init__(self, **kwargs):
-        self.step_title: str
-        self.difficulty: float
-        self.complete: bool
-        self.points: int
-        self.finishDate: str
-        self.priority: str
-        self.notes: str
-        self.__dict__.update(kwargs)
-        
-    def write(self) -> dict:
-        return self.__dict__
-
-    @staticmethod
-    def get():
-        template = {}
-        return template
-
-
 class Self:
     """ Container for values of FormMultiPageActionWithMenus """
     pass
@@ -144,7 +49,7 @@ class CreateProject(npyscreen.NPSAppManaged):
             _value_list,
             _name='Text Box',
             _max_height=6,
-            _footer="Press [i|o] to edit | ctrl-p: [↑] | ctrl-n: [↓]",
+            _footer="Press [i|o] to insert values",
             _slow_scroll=False):
         return form.add(npyscreen.MultiLineEditableBoxed,
                 max_height=_max_height,
@@ -163,21 +68,13 @@ class CreateProject(npyscreen.NPSAppManaged):
         """
         cp = nps.FormMultiPageActionWithMenus(name=CreateProject.name)
         projectName = cp.add(nps.TitleText, name='Project Name:', value='')
-        project_location = cp.add(nps.TitleFilenameCombo, name='Repository Location')
         pn = []
         project_description = CreateProject.Textbox(
                 form=cp,
                 _value_list=pn,
                 _name='Description')
-        """
-        Need to add a handler to `project_description`
-        that resolves the following sequences:
-
-        curses.KEY_UP | self.handlers["^P"]
-        """
-        #project_location = cp.add(nps.TitleFilenameCombo, name='Repository Location')
+        project_location = cp.add(nps.TitleFilenameCombo, name='Repository Location')
         #cp.add_widget_intelligent(nps.FileSelector, message=nps.selectFile('~/'))
-        
         # Maybe add the box for choosing project directory/Git Repo
         startDate = cp.add(nps.TitleDateCombo, name='Start Date:')
         finishDate = cp.add(nps.TitleDateCombo, name='Finish Date:')
@@ -361,70 +258,6 @@ class CreateProject(npyscreen.NPSAppManaged):
         # Call core.Main.resume(handler=CreateProject.handler)
         Main.resume(self.handler)
 
-    def features(self):
-        self.feature_title: str
-        self.complete: bool
-        self.difficulty: float
-        self.points = 0
-        self.finishDate: str
-        self.priority: str
-        self.tasks = []
-        
-    def tasks(self):
-        self.task_title: str
-        self.complete: bool
-        self.difficulty: float
-        self.points = 0
-        self.finishDate: str
-        self.priority: str
-        self.steps = []
-
-    def steps(self):
-        self.step_title: str
-        self.complete: bool
-        self.difficulty: float
-        self.points = 0
-        self.finishDate: str
-        self.priority: str
-        self.notes = ''
- 
-    def first_save(self, _features):
-        file_path = 'records.json'
-        from pathlib import Path
-        if Path(f"{file_path}").is_file():
-            return self.save(_features)
-        with open("template.json", "r") as template:
-            records = json.load(template)
-        firstProject = {
-                'projectName': self.projectName.value,
-                'description': self.description.value,
-                'startDate': str(self.startDate.value),
-                'finishDate': str(self.finishDate.value),
-                'features': _features}
-        records["names"].append(self.projectName.value)
-        records["all"].update({self.projectName.value: firstProject})
-        with open("records.json", "w") as savefile:
-            json.dump(savefile)
-    
-    def save(self, _features: list):
-        file_path = './records.json'
-        this = {
-            'projectName': self.projectName.value,
-            'description': self.description.value,
-            'startDate': str(self.startDate.value),
-            'finishDate': str(self.finishDate),
-            'features': _features}
-        obj = Record(**this)
-        with open(file_path, "r") as f:
-            Record.records = json.load(f)
-        records.append(this)
-        for i in range(len(records)):
-            cache[records[i]]["projectName"] = records[i]
-        with open(file_path, 'w') as f:
-            dumping = [cache[key] for key in list(cache)]
-            records = json.dumps(dumping, indent=4)
-            f.write(records)
-
 def call_counter(function):
     create_project_count = 0
     main_count = 0
@@ -460,15 +293,15 @@ class Main:
 
     @staticmethod
     @call_counter
-    def main(handler):
-        CreateProject.handler = handler
-        handler.clear_screen()
-        handler.menu_pause()
+    def main():
+        #CreateProject.handler = handler
+        #handler.clear_screen()
+        #handler.menu_pause()
         print(npyscreen.wrapper_basic(Main.create_project))
 
     @staticmethod
     @call_counter
-    def resume(handler):
+    def resume():
         #handler.menu.draw()
         #handler.menu_resume()
         #sys.exit(handler.app.start_fragile(doUpdate=True))
@@ -478,8 +311,6 @@ class Main:
         curses.nocbreak()
         curses.endwin()
         sys.exit(handler.clas._start_fragile())
-"""
+
 if __name__ == '__main__':
-    print(npyscreen.wrapper_basic(Main.create_project))
-    Application.start_fragile()
-"""
+    Main.main()
