@@ -148,32 +148,40 @@ class FragileProject:
     def __str__(self):
         return self.name
 
+    @staticmethod
+    def refresh_saved(f):
+        FragileProject.each = []
+        return f
+
 class Application:
     def __init__(self):
         pass
 
     def start_fragile(self):
         curses_menu.clear_terminal()
-        PATH_TO_FRAGILE = str(Path(__file__).parent.absolute())
-        PATH_TO_RECORDS = PATH_TO_FRAGILE + '/records.pydict'
         descr = 'A local goal-planning kanban board inspired by Agile methodologies.'
         menu = CursesMenu('Fragile Project Manager', descr, show_exit_option=False)
         handler = Handler(menu=menu, app=self, cp=CreateProject, clas=Application)
-        
-        # Get all of the saved projects
-        with open(PATH_TO_RECORDS, 'r') as recs:
-            _records = recs.read()
-        records = eval(_records)    
-        projects = records['all']
 
-        # Iterate over each of the projects and make a FragileProject instance
-        for project in projects:
-            FragileProject(projects[project]['projectName'], projects[project])
-
+        @FragileProject.refresh_saved
         def launch():
             nonlocal descr
             nonlocal menu
             nonlocal handler
+            PATH_TO_FRAGILE = str(Path(__file__).parent.absolute())
+            PATH_TO_RECORDS = PATH_TO_FRAGILE + '/records.pydict'
+
+            # Get all of the saved projects
+            with open(PATH_TO_RECORDS, 'r') as recs:
+                _records = recs.read()
+            records = eval(_records)    
+            projects = records['all']
+
+            # Iterate over each of the projects and make a FragileProject instance
+            for project in projects:
+                FragileProject(projects[project]['projectName'], projects[project])
+
+
 
             ''' 1 - Open/Edit a project '''
             # Replace `openProject`'s options
