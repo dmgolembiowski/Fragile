@@ -17,6 +17,8 @@ Fragile: Terminal application for managing and tracking projects in production.
 import threading
 import time
 import sys
+from pathlib import Path
+import datetime
 import os
 import socket
 from .Cursedmenu import CursesMenu, SelectionMenu, curses_menu
@@ -136,15 +138,37 @@ class Handler:
         self.menu.clear_screen()
         curses_menu.clear_terminal()
 
+class FragileProject:
+    each = []
+    def __init__(self, name, datastructure):
+        self.name = name
+        self.datastructure = datastructure
+        FragileProject.each.append(self)
+
+    def __str__(self):
+        return self.name
+
 class Application:
     def __init__(self):
         pass
 
     def start_fragile(self):
         curses_menu.clear_terminal()
+        PATH_TO_FRAGILE = str(Path(__file__).parent.absolute())
+        PATH_TO_RECORDS = PATH_TO_FRAGILE + '/records.pydict'
         descr = 'A local goal-planning kanban board inspired by Agile methodologies.'
         menu = CursesMenu('Fragile Project Manager', descr, show_exit_option=False)
         handler = Handler(menu=menu, app=self, cp=CreateProject, clas=Application)
+        
+        # Get all of the saved projects
+        with open(PATH_TO_RECORDS, 'r') as recs:
+            _records = recs.read()
+        records = eval(_records)    
+        projects = records['all']
+
+        # Iterate over each of the projects and make a FragileProject instance
+        for project in projects:
+            FragileProject(projects[project]['projectName'], projects[project])
 
         def launch():
             nonlocal descr
@@ -154,7 +178,7 @@ class Application:
             ''' 1 - Open/Edit a project '''
             # Replace `openProject`'s options
             openProject = SelectionMenu(
-                    ["item1", "item2", "item3"]
+                    FragileProject.each
                 )
             __openProject__ = SubmenuItem(
                     "Open or Modify a Project", 
@@ -168,7 +192,8 @@ class Application:
                     args=[handler])
 
             ''' 3 - Search for a project or file '''
-            __search__ = MenuItem("Search for a project or file")
+            __search__ = MenuItem(
+                    "Search for a project or file")
 
             __exit__ = FunctionItem(
                     "Exit",
