@@ -19,12 +19,12 @@ nps = npyscreen
 import threading
 import os
 import sys
-try:
-    from .Cursedmenu import CursesMenu, SelectionMenu, curses_menu
-    from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
-except ImportError:
-    from cursesmenu import CursesMenu, SelectionMenu, curses_menu
-    from cursesmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
+from cursesmenu import CursesMenu, SelectionMenu, curses_menu
+from cursesmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
+sys.path.append("/home/david/.local/bin/Fragile/Fragile/")
+#from Extensions import FileExplorer
+#from .Cursedmenu import CursesMenu, SelectionMenu, curses_menu
+#from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
 #from .Extensions import FileExplorer
 import curses
 import json

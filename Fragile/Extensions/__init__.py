@@ -31,7 +31,7 @@ class Explorer(nps.BoxTitle, ):
                 max_height=self.max_height)
 
 
-class FileExplorer(nps.Explorer):
+class FileExplorer(nps.TitleFilenameCombo):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
@@ -44,6 +44,6 @@ class FileExplorer(nps.Explorer):
     @staticmethod
     def main():
         print(FileExplorer.test_function)
-
+'''
 if __name__ == '__main__':
-    FileExplorer.main()
+    FileExplorer.main()'''
