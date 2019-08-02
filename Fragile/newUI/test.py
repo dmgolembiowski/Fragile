@@ -49,7 +49,7 @@ def main(stdscr):
         stdscr.addch(3, 6, curses.ACS_HLINE)
         stdscr.addch(3,7, curses.ACS_TTEE)
         stdscr.addch(3, 8, curses.ACS_HLINE)
-        stdscr.addstr(3, 10, "{{ r['all'][projectName]['features'][0][featureName] }}")
+        stdscr.addstr(3, 10, "{{ r['all'][projectName]['features'][0]['featureName'] }}")
         """stdscr.addch(4, 4, curses.ACS_VLINE)
         stdscr.addch(5, 4, curses.ACS_VLINE)
         stdscr.addch(6, 4, curses.ACS_VLINE)
@@ -85,12 +85,36 @@ def main(stdscr):
         stdscr.addch(5,8, curses.ACS_HLINE)
         stdscr.addch(5, 9, curses.ACS_HLINE)
         stdscr.addch(5, 10, curses.ACS_HLINE)
-        stdscr.addch(5, 11, curses.ACS_TTEE)
+        stdscr.addch(5, 11, curses.ACS_TTEE) # Begin third vertical line
         stdscr.addch(5, 12, curses.ACS_HLINE)
+        #stdscr.addch(5, 13, curses.ACS_HLINE) <- visual space
         stdscr.addstr(5, 14, "{{ r['all'][projectName]...['tasks'][0] }}")
+
+        stdscr.addch(6, 11, curses.ACS_VLINE)
+        stdscr.addch(7, 11, curses.ACS_LTEE) # Begin nesting all steps + Step Generator
+        stdscr.addch(8, 11, curses.ACS_VLINE)
+        stdscr.addch(9, 11, curses.ACS_VLINE)
+        stdscr.addch(10, 11, curses.ACS_VLINE)
+        stdscr.addch(11, 11, curses.ACS_VLINE)
+        stdscr.addch(12, 11, curses.ACS_VLINE)
+        stdscr.addch(13, 11, curses.ACS_LLCORNER)
+        stdscr.addstr(13, 13, "+ Add a New Step")
+        
+        # Depth 6
+        stdscr.addch(7, 13, curses.ACS_HLINE)
+        stdscr.addstr(7, 13, "{{ r['all'][projectName]...['steps'][0]['stepName'] }}")
+        stdscr.addch(7, 13, curses.ACS_LTEE)
+        #stdscr.addstr(9, 13, "{{ r['all][projectName]...['steps'][1]['stepName'] }}")
+        #stdscr.addch(, 15, curses.ACS_LTEE)
+
+
+        """
+        with open("codes.txt", "w+") as f:
+            f.write(f"curses.ACS_VLINE={curses.ACS_VLINE}\ncurses.ACS_HLINE={curses.ACS_HLINE}\ncurses.TTEE={curses.ACS_TTEE}\ncurses.ACS_LLCORNER={curses.ACS_LLCORNER}")
         # Clear out anything else the user has typed in
         curses.flushinp()
         #stdscr.clear()
+        """
         '''
         # If the user presses p, increase the width of the springy bar
         if c == ord('p'):
