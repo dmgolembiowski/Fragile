@@ -26,6 +26,9 @@ from .Cursedmenu.items import SubmenuItem, CommandItem, MenuItem, FunctionItem
 import curses
 from .core import CreateProject, Main
 import functools
+#import pudb
+#pu.db
+
 #-----------------------------------------------------------------------------
 
 class User:
@@ -160,28 +163,50 @@ class Application:
             # Iterate over each of the projects and make a FragileProject instance
             for project in projects:
                 FragileProject(projects[project]['projectName'], projects[project])
+            
+            options = SelectionMenu(FragileProject.each)
 
+            __openProject__ = SubmenuItem("Open a saved Fragile Project", options)
 
-
-            ''' 1 - Open/Edit a project '''
-            # Replace `openProject`'s options
-            openProject = SelectionMenu(
-                    FragileProject.each
-                )
-            __openProject__ = SubmenuItem(
-                    "Open or Modify a Project", 
-                    openProject, 
-                    menu) 
-
-            ''' 2 - Create a new project '''
             __createNew__ = FunctionItem(
-                    "Create a new project",
+                    "Create a new Fragile Project",
                     Main.main,
                     args=[handler])
 
-            ''' 3 - Search for a project or file '''
-            __search__ = MenuItem(
-                    "Search for a project or file")
+
+            __memberSpace__ = FunctionItem(
+                    "Open a Team Member's Fragile Board",
+                    lambda: None,
+                    args=[handler])
+
+
+            __lookup__ = MenuItem(
+                    "Search projects for a file")
+
+
+            __admin__  = MenuItem(
+                    "Team Administration")
+
+
+            __dock__   = MenuItem(
+                    "Configure External Connections")
+
+
+            __dash__   = MenuItem(
+                    "Dashboard Overview of a Fragile Project")
+
+
+            __cal__    = MenuItem(
+                    "Calendar of Upcoming Deadlines")
+
+
+            __export__ = MenuItem(
+                    "Export all project records")
+
+
+            __services__ = MenuItem(
+                    "Manage background Fragile jobs, platforms, services, etc.")
+
 
             __exit__ = FunctionItem(
                     "Exit",
@@ -190,9 +215,19 @@ class Application:
             for item in [
                     __openProject__,
                     __createNew__,
-                    __search__,
+                    __memberSpace__,
+                    __lookup__,
+                    __admin__,
+                    __dock__,
+                    __dash__,
+                    __cal__,
+                    __export__,
+                    __services__,
                     __exit__]:
+                #cp.menu.append_item(item)
                 menu.append_item(item)
+
+            #cp.menu.show()
             menu.show()
         launch()
 
